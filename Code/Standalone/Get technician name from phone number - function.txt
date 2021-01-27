@@ -1,0 +1,18 @@
+CREATE OR REPLACE FUNCTION getTechnicianNameFromNumber(i_phone_number IN technicians.technician_phone_number%TYPE) RETURN technicians.technician_name%TYPE AS tech_name technicians.technician_name%TYPE;
+BEGIN 
+	SELECT technician_name INTO tech_name FROM technicians WHERE technician_phone_number = i_phone_number;
+	RETURN tech_name;
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			RETURN '';
+END getTechnicianNameFromNumber;
+
+DECLARE
+	v_technician_phone_number technicians.technician_phone_number%TYPE := '1234567890';
+BEGIN
+	IF getTechnicianNameFromNumber(v_technician_phone_number) IS NULL THEN
+		DBMS_OUTPUT.PUT_LINE('Technician with this phone number does not exist in the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Technician name: ' || getTechnicianNameFromNumber(v_technician_phone_number));
+	END IF;
+END;

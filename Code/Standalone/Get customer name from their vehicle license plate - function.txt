@@ -1,0 +1,18 @@
+CREATE OR REPLACE FUNCTION getCustomerNameFromVehicleLicensePlate(i_license_plate IN vehicles.vehicle_license_plate%TYPE) RETURN customers.customer_name%TYPE AS owner_name customers.customer_name%TYPE;
+BEGIN 
+	SELECT customer_name INTO owner_name FROM customers WHERE vehicle_license_plate = i_license_plate;
+	RETURN owner_name;
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			RETURN '';
+END getCustomerNameFromVehicleLicensePlate;
+
+DECLARE
+	v_vehicle_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	IF getCustomerNameFromVehicleLicensePlate(v_vehicle_license_plate) IS NULL THEN
+		DBMS_OUTPUT.PUT_LINE('Vehicle with this license plate does not exist in the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Customer name: ' || getCustomerNameFromVehicleLicensePlate(v_vehicle_license_plate));
+	END IF;
+END;

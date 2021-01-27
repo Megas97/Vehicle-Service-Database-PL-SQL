@@ -1,0 +1,24 @@
+CREATE OR REPLACE PROCEDURE AddNewTechnician(i_name IN technicians.technician_name%TYPE, i_field IN technicians.technician_field%TYPE, i_phone_number IN technicians.technician_phone_number%TYPE)
+AS
+	v_technician_exists NUMBER;
+	v_phone_number_taken_by_customer NUMBER;
+BEGIN 
+	SELECT COUNT(*) INTO v_technician_exists FROM technicians WHERE i_phone_number = technician_phone_number;
+	SELECT COUNT(*) INTO v_phone_number_taken_by_customer FROM customers WHERE i_phone_number = customer_phone_number;
+	IF v_technician_exists > 0 THEN
+		DBMS_OUTPUT.PUT_LINE('This phone number is already used by an existing technician.');
+	ELSIF v_phone_number_taken_by_customer > 0 THEN
+		DBMS_OUTPUT.PUT_LINE('This phone number is already used by an existing customer.');
+	ELSE
+		INSERT INTO technicians(technician_name, technician_field, technician_phone_number) VALUES (i_name, i_field, i_phone_number);
+		DBMS_OUTPUT.PUT_LINE('Technician successfully added to the database.');
+	END IF;
+END AddNewTechnician;
+
+DECLARE
+	i_name technicians.technician_name%TYPE := 'Peter Parker';
+	i_field technicians.technician_field%TYPE := 'Engine Mechanic';
+	i_phone_number technicians.technician_phone_number%TYPE := '1234567890';
+BEGIN
+	AddNewTechnician(i_name, i_field, i_phone_number);
+END;

@@ -1,0 +1,31 @@
+CREATE TABLE Technicians (
+    technician_name VARCHAR2(50) NOT NULL,
+    technician_field VARCHAR2(50) NOT NULL,
+    technician_phone_number VARCHAR2(10) NOT NULL,
+    CONSTRAINT technicians_pk PRIMARY KEY (technician_phone_number)
+);
+
+CREATE TABLE Vehicles (
+    vehicle_license_plate VARCHAR2(8) NOT NULL,
+    vehicle_make VARCHAR2(50) NOT NULL,
+    vehicle_model VARCHAR2(50) NOT NULL,
+    CONSTRAINT vehicles_pk PRIMARY KEY (vehicle_license_plate)
+);
+
+CREATE TABLE Customers (
+    customer_name VARCHAR2(50) NOT NULL,
+    customer_address VARCHAR2(100) NOT NULL,
+    customer_phone_number VARCHAR2(10) NOT NULL,
+    vehicle_license_plate VARCHAR2(8) NOT NULL,
+    CONSTRAINT customers_pk PRIMARY KEY (customer_phone_number),
+    CONSTRAINT fk_vehicles FOREIGN KEY (vehicle_license_plate) REFERENCES vehicles(vehicle_license_plate)
+);
+
+CREATE TABLE Appointments (
+    technician_phone_number VARCHAR2(10) NOT NULL,
+    vehicle_license_plate VARCHAR2(8) NOT NULL,
+    appointment_timestamp TIMESTAMP NOT NULL,
+    CONSTRAINT appointments_pk PRIMARY KEY (technician_phone_number, vehicle_license_plate),
+    CONSTRAINT fk_technicians FOREIGN KEY (technician_phone_number) REFERENCES technicians(technician_phone_number),
+    CONSTRAINT fk_vehicles2 FOREIGN KEY (vehicle_license_plate) REFERENCES vehicles(vehicle_license_plate)
+);

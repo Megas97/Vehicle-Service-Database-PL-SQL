@@ -1,0 +1,22 @@
+DECLARE
+	cur SYS_REFCURSOR;
+	v_vehicle_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+	v_technician_phone_number technicians.technician_phone_number%TYPE;
+	v_appointment_timestamp appointments.appointment_timestamp%TYPE;
+BEGIN
+	IF vehicle_service.getVehicleMakeFromVehicleLicensePlate(v_vehicle_license_plate) IS NULL THEN
+		DBMS_OUTPUT.PUT_LINE('No vehicle with the given license plate exists in the database.');
+		RETURN;
+	END IF;
+	cur := vehicle_service.getAllTechniciansSignedToVehicle(v_vehicle_license_plate);
+	DBMS_OUTPUT.PUT_LINE('All technicians signed on to vehicle with license plate ' || v_vehicle_license_plate || ':' || chr(10));
+	LOOP
+		FETCH cur INTO v_technician_phone_number, v_vehicle_license_plate, v_appointment_timestamp;
+		EXIT WHEN cur%NOTFOUND;
+		DBMS_OUTPUT.PUT_LINE('Technician name: ' || vehicle_service.getTechnicianNameFromNumber(v_technician_phone_number));
+		DBMS_OUTPUT.PUT_LINE('Technician field: ' || vehicle_service.getTechnicianFieldFromNumber(v_technician_phone_number));
+		DBMS_OUTPUT.PUT_LINE('Technician phone number: ' || v_technician_phone_number);
+		DBMS_OUTPUT.PUT_LINE('Appointment date: ' || v_appointment_timestamp || chr(10));
+	END LOOP;
+	CLOSE cur;
+END;

@@ -1,0 +1,40 @@
+CREATE OR REPLACE FUNCTION getAllVehiclesWithOwnersOnSpecificDate(i_date IN VARCHAR2) RETURN SYS_REFCURSOR AS cur SYS_REFCURSOR;
+BEGIN 
+	OPEN cur FOR SELECT * FROM appointments WHERE SUBSTR(appointment_timestamp, 0, 9) = SUBSTR(TO_TIMESTAMP(i_date, 'DD.MM.YYYY'), 0, 9);
+	RETURN cur;
+END getAllVehiclesWithOwnersOnSpecificDate;
+
+DECLARE
+	cur SYS_REFCURSOR;
+	v_date VARCHAR2(10) := '29.12.2020';
+	v_technician_phone_number technicians.technician_phone_number%TYPE;
+	v_vehicle_license_plate vehicles.vehicle_license_plate%TYPE;
+	v_vehicle_make vehicles.vehicle_make%TYPE;
+	v_vehicle_model vehicles.vehicle_model%TYPE;
+	v_vehicle_owner_name customers.customer_name%TYPE;
+	v_vehicle_owner_phone_number customers.customer_phone_number%TYPE;
+	v_vehicle_owner_address customers.customer_address%TYPE;
+	v_appointment_timestamp appointments.appointment_timestamp%TYPE;
+BEGIN
+	IF checkTimestampExistsFromDate(v_date) = 0 THEN
+		DBMS_OUTPUT.PUT_LINE('Appointment date does not exist in the database.');
+		RETURN;
+	END IF;
+	cur := getAllVehiclesWithOwnersOnSpecificDate(v_date);
+	DBMS_OUTPUT.PUT_LINE('All vehicles, their owners and the technicians signed on to them on ' || v_date || ' in the service:' || chr(10));
+	LOOP
+		FETCH cur INTO v_technician_phone_number, v_vehicle_license_plate, v_appointment_timestamp;
+		EXIT WHEN cur%NOTFOUND;
+		DBMS_OUTPUT.PUT_LINE('Appointment date: ' || v_appointment_timestamp);
+		DBMS_OUTPUT.PUT_LINE('Technician name: ' || getTechnicianNameFromNumber(v_technician_phone_number));
+		DBMS_OUTPUT.PUT_LINE('Technician field: ' || getTechnicianFieldFromNumber(v_technician_phone_number));
+		DBMS_OUTPUT.PUT_LINE('Technician phone number: ' || v_technician_phone_number);
+		DBMS_OUTPUT.PUT_LINE('Vehicle license plate: ' || v_vehicle_license_plate);
+		DBMS_OUTPUT.PUT_LINE('Vehicle make: ' || getVehicleMakeFromVehicleLicensePlate(v_vehicle_license_plate));
+		DBMS_OUTPUT.PUT_LINE('Vehicle model: ' || getVehicleModelFromVehicleLicensePlate(v_vehicle_license_plate));
+		DBMS_OUTPUT.PUT_LINE('Owner name: ' || getCustomerNameFromVehicleLicensePlate(v_vehicle_license_plate));
+		DBMS_OUTPUT.PUT_LINE('Owner phone number: ' || getCustomerPhoneNumberFromVehicleLicensePlate(v_vehicle_license_plate));
+		DBMS_OUTPUT.PUT_LINE('Owner address: ' || getCustomerAddressFromVehicleLicensePlate(v_vehicle_license_plate) || chr(10));
+	END LOOP;
+	CLOSE cur;
+END;

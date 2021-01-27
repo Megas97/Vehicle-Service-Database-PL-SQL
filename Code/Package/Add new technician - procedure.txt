@@ -1,0 +1,7 @@
+DECLARE
+	i_name technicians.technician_name%TYPE := 'Peter Parker';
+	i_field technicians.technician_field%TYPE := 'Engine Mechanic';
+	i_phone_number technicians.technician_phone_number%TYPE := '1234567890';
+BEGIN
+	vehicle_service.AddNewTechnician(i_name, i_field, i_phone_number);
+END;

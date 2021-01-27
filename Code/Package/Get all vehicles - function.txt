@@ -1,0 +1,17 @@
+DECLARE
+	cur SYS_REFCURSOR;
+	v_vehicle_license_plate vehicles.vehicle_license_plate%TYPE;
+	v_vehicle_make vehicles.vehicle_make%TYPE;
+	v_vehicle_model vehicles.vehicle_model%TYPE;
+BEGIN
+	cur := vehicle_service.getAllVehicles();
+	DBMS_OUTPUT.PUT_LINE('All vehicles in the service:' || chr(10));
+	LOOP
+		FETCH cur INTO v_vehicle_license_plate, v_vehicle_make, v_vehicle_model;
+		EXIT WHEN cur%NOTFOUND;
+		DBMS_OUTPUT.PUT_LINE('Vehicle license plate: ' || v_vehicle_license_plate);
+		DBMS_OUTPUT.PUT_LINE('Vehicle make: ' || v_vehicle_make);
+		DBMS_OUTPUT.PUT_LINE('Vehicle model: ' || v_vehicle_model || chr(10));
+	END LOOP;
+	CLOSE cur;
+END;

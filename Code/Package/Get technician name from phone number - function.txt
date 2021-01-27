@@ -1,0 +1,9 @@
+DECLARE
+	v_technician_phone_number technicians.technician_phone_number%TYPE := '1234567890';
+BEGIN
+	IF vehicle_service.getTechnicianNameFromNumber(v_technician_phone_number) IS NULL THEN
+		DBMS_OUTPUT.PUT_LINE('Technician with this phone number does not exist in the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Technician name: ' || vehicle_service.getTechnicianNameFromNumber(v_technician_phone_number));
+	END IF;
+END;

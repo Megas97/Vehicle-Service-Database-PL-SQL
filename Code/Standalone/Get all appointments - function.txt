@@ -1,0 +1,26 @@
+CREATE OR REPLACE FUNCTION getAllAppointments RETURN SYS_REFCURSOR AS cur SYS_REFCURSOR;
+BEGIN 
+	OPEN cur FOR SELECT * FROM appointments;
+	RETURN cur; 
+END getAllAppointments;
+
+DECLARE
+	cur SYS_REFCURSOR;
+	v_technician_phone_number appointments.technician_phone_number%TYPE;
+	v_vehicle_license_plate appointments.vehicle_license_plate%TYPE;
+	v_appointment_timestamp appointments.appointment_timestamp%TYPE;
+BEGIN
+	cur := getAllAppointments();
+	DBMS_OUTPUT.PUT_LINE('All appointments in the service:' || chr(10));
+	LOOP
+		FETCH cur INTO v_technician_phone_number, v_vehicle_license_plate, v_appointment_timestamp;
+		EXIT WHEN cur%NOTFOUND;
+		DBMS_OUTPUT.PUT_LINE('Technician name: ' || getTechnicianNameFromNumber(v_technician_phone_number));
+		DBMS_OUTPUT.PUT_LINE('Technician phone number: ' || v_technician_phone_number);
+		DBMS_OUTPUT.PUT_LINE('Vehicle license plate: ' || v_vehicle_license_plate);
+		DBMS_OUTPUT.PUT_LINE('Vehicle owner: ' || getCustomerNameFromVehicleLicensePlate(v_vehicle_license_plate));
+		DBMS_OUTPUT.PUT_LINE('Vehicle owner phone number: ' || getCustomerPhoneNumberFromVehicleLicensePlate(v_vehicle_license_plate));
+		DBMS_OUTPUT.PUT_LINE('Appointment date: ' || v_appointment_timestamp || chr(10));
+	END LOOP;
+	CLOSE cur;
+END;

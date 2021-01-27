@@ -1,0 +1,15 @@
+CREATE OR REPLACE FUNCTION checkTimestampExistsFromDate(i_date IN VARCHAR2) RETURN NUMBER AS appointment_exists NUMBER;
+BEGIN 
+	SELECT COUNT(*) INTO appointment_exists FROM appointments WHERE SUBSTR(appointment_timestamp, 0, 9) = SUBSTR(TO_TIMESTAMP(i_date, 'DD.MM.YYYY'), 0, 9);
+	RETURN appointment_exists;
+END checkTimestampExistsFromDate;
+
+DECLARE
+	v_date VARCHAR(10) := '29.12.2020';
+BEGIN
+	IF checkTimestampExistsFromDate(v_date) = 0 THEN
+		DBMS_OUTPUT.PUT_LINE('Appointment date does not exist in the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Appointments on ' || v_date || ': ' || checkTimestampExistsFromDate(v_date));
+	END IF;
+END;

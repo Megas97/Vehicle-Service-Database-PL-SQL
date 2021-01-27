@@ -1,0 +1,8 @@
+DECLARE
+	i_name customers.customer_name%TYPE := 'Tony Stark';
+	i_address customers.customer_address%TYPE := 'Sofia, Mladost 3, bl. 345, entr. 4, fl. 3, ap. 300';
+	i_phone_number customers.customer_phone_number%TYPE := '1234567890';
+	i_vehicle_license_plate customers.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	vehicle_service.AddNewCustomer(i_name, i_address, i_phone_number, i_vehicle_license_plate);
+END;

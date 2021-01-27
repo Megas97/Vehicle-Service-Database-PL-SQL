@@ -1,0 +1,9 @@
+DECLARE
+	v_date VARCHAR(10) := '29.12.2020';
+BEGIN
+	IF vehicle_service.checkTimestampExistsFromDate(v_date) = 0 THEN
+		DBMS_OUTPUT.PUT_LINE('Appointment date does not exist in the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Appointments on ' || v_date || ': ' || vehicle_service.checkTimestampExistsFromDate(v_date));
+	END IF;
+END;

@@ -1,0 +1,7 @@
+DECLARE
+	i_phone_number appointments.technician_phone_number%TYPE := '1234567890';
+	i_vehicle_license_plate appointments.vehicle_license_plate%TYPE := 'CA1234CB';
+	i_date appointments.appointment_timestamp%TYPE := TO_TIMESTAMP('29.12.2020 8:30:25', 'DD.MM.YYYY HH24:MI:SS');
+BEGIN
+	vehicle_service.AddNewAppointment(i_phone_number, i_vehicle_license_plate, i_date);
+END;

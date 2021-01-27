@@ -1,0 +1,11 @@
+Create Oracle Auto Increment Column: https://www.databasestar.com/auto_increment-oracle-sql/
+Find installed Oracle APEX Version: https://www.foxinfotech.in/2019/04/3-ways-to-find-oracle-apex-version-installed-locally-or-server.html
+Catch Constraint Violation In PL/SQL: https://stackoverflow.com/questions/23239172/how-to-catch-constraint-violation-in-pl-sql
+PL/SQL TOTIMESTAMP Function: https://www.techonthenet.com/oracle/functions/to_timestamp.php
+Define Composite Primary Key In PL/SQL: https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:136812348065
+PL/SQL Cursor Variables With REF CURSOR: https://www.oracletutorial.com/plsql-tutorial/plsql-cursor-variables/
+Print New Line In PL/SQL: https://stackoverflow.com/questions/11329953/how-do-i-print-output-in-new-line-in-pl-sql
+PL/SQL NO_DATA_FOUND Exception: https://www.talkapex.com/2012/08/nodatafound-exceptions-in-plsql/
+Compare Empty Strings In PL/SQL: https://stackoverflow.com/questions/51442636/comparing-two-empty-strings-in-oracle-sql
+Escape Single Quote In String In PL/SQL: https://stackoverflow.com/questions/11315340/pl-sql-how-to-escape-single-quote-in-a-string
+PL/SQL SUBSTR Function: https://www.techonthenet.com/oracle/functions/substr.php

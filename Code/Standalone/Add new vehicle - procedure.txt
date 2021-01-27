@@ -1,0 +1,20 @@
+CREATE OR REPLACE PROCEDURE AddNewVehicle(i_license_plate IN vehicles.vehicle_license_plate%TYPE, i_make IN vehicles.vehicle_make%TYPE, i_model IN vehicles.vehicle_model%TYPE)
+AS
+	v_vehicle_exists NUMBER;
+BEGIN 
+	SELECT COUNT(*) INTO v_vehicle_exists FROM vehicles WHERE i_license_plate = vehicle_license_plate;
+	IF v_vehicle_exists > 0 THEN
+		DBMS_OUTPUT.PUT_LINE('A vehicle with this license plate already exists in the database.');
+	ELSE
+		INSERT INTO vehicles(vehicle_license_plate, vehicle_make, vehicle_model) VALUES (i_license_plate, i_make, i_model);
+		DBMS_OUTPUT.PUT_LINE('Vehicle successfully added to the database.');
+	END IF;
+END AddNewVehicle;
+
+DECLARE
+	i_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+	i_make vehicles.vehicle_make%TYPE := 'Honda';
+	i_model vehicles.vehicle_model%TYPE := 'Accord';
+BEGIN
+	AddNewVehicle(i_license_plate, i_make, i_model);
+END;

@@ -1,0 +1,9 @@
+DECLARE
+	v_vehicle_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	IF vehicle_service.getCustomerAddressFromVehicleLicensePlate(v_vehicle_license_plate) IS NULL THEN
+		DBMS_OUTPUT.PUT_LINE('Vehicle with this license plate does not exist in the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Customer address: ' || vehicle_service.getCustomerAddressFromVehicleLicensePlate(v_vehicle_license_plate));
+	END IF;
+END;

@@ -1,0 +1,23 @@
+CREATE OR REPLACE FUNCTION getAllTechnicians RETURN SYS_REFCURSOR AS cur SYS_REFCURSOR;
+BEGIN 
+	OPEN cur FOR SELECT * FROM technicians;
+	RETURN cur; 
+END getAllTechnicians;
+
+DECLARE
+	cur SYS_REFCURSOR;
+	v_technician_name technicians.technician_name%TYPE;
+	v_technician_field technicians.technician_field%TYPE;
+	v_technician_phone_number technicians.technician_phone_number%TYPE;
+BEGIN
+	cur := getAllTechnicians();
+	DBMS_OUTPUT.PUT_LINE('All technicians in the service:' || chr(10));
+	LOOP
+		FETCH cur INTO v_technician_name, v_technician_field, v_technician_phone_number;
+		EXIT WHEN cur%NOTFOUND;
+		DBMS_OUTPUT.PUT_LINE('Technician name: ' || v_technician_name);
+		DBMS_OUTPUT.PUT_LINE('Technician field: ' || v_technician_field);
+		DBMS_OUTPUT.PUT_LINE('Technician phone number: ' || v_technician_phone_number || chr(10));
+	END LOOP;
+	CLOSE cur;
+END;

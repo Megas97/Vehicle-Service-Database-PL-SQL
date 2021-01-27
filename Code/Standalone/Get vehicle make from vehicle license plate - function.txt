@@ -1,0 +1,18 @@
+CREATE OR REPLACE FUNCTION getVehicleMakeFromVehicleLicensePlate(i_license_plate IN vehicles.vehicle_license_plate%TYPE) RETURN vehicles.vehicle_make%TYPE AS veh_make vehicles.vehicle_make%TYPE;
+BEGIN 
+	SELECT vehicle_make INTO veh_make FROM vehicles WHERE vehicle_license_plate = i_license_plate;
+	RETURN veh_make;
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			RETURN '';
+END getVehicleMakeFromVehicleLicensePlate;
+
+DECLARE
+	v_vehicle_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	IF getVehicleMakeFromVehicleLicensePlate(v_vehicle_license_plate) IS NULL THEN
+		DBMS_OUTPUT.PUT_LINE('Vehicle with this license plate does not exist in the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Vehicle make: ' || getVehicleMakeFromVehicleLicensePlate(v_vehicle_license_plate));
+	END IF;
+END;

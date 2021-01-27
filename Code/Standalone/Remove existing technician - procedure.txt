@@ -1,0 +1,25 @@
+CREATE OR REPLACE PROCEDURE RemoveExistingTechnician(i_phone_number IN technicians.technician_phone_number%TYPE)
+AS
+	v_technician_exists NUMBER;
+	v_appointments_exist NUMBER;
+	v_extra_text VARCHAR2(22) := '';
+BEGIN 
+	SELECT COUNT(*) INTO v_technician_exists FROM technicians WHERE technician_phone_number = i_phone_number;
+	IF v_technician_exists > 0 THEN
+		SELECT COUNT(*) INTO v_appointments_exist FROM appointments WHERE technician_phone_number = i_phone_number;
+		IF v_appointments_exist > 0 THEN
+			DELETE FROM appointments WHERE technician_phone_number = i_phone_number;
+			v_extra_text := 'and their appointments ';
+		END IF;
+		DELETE FROM technicians WHERE technician_phone_number = i_phone_number;
+		DBMS_OUTPUT.PUT_LINE('Technician ' || v_extra_text || 'successfully removed from the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Technician with this phone number does not exist in the database.');
+	END IF;
+END RemoveExistingTechnician;
+
+DECLARE
+	i_phone_number technicians.technician_phone_number%TYPE := '1234567890';
+BEGIN
+	RemoveExistingTechnician(i_phone_number);
+END;

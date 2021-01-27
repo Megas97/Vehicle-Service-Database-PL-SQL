@@ -1,0 +1,5 @@
+DECLARE
+	i_vehicle_license_plate appointments.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	vehicle_service.RemoveExistingAppointment(i_vehicle_license_plate);
+END;

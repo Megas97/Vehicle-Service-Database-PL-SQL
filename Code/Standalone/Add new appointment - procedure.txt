@@ -1,0 +1,45 @@
+CREATE OR REPLACE PROCEDURE AddNewAppointment(i_phone_number IN appointments.technician_phone_number%TYPE, i_vehicle_license_plate IN appointments.vehicle_license_plate%TYPE, i_timestamp IN appointments.appointment_timestamp%TYPE)
+AS
+	v_appointment_exists NUMBER;
+	v_technician_exists NUMBER;
+	v_vehicle_exists NUMBER;
+	v_vehicle_has_owner NUMBER;
+	NOT_TECHNICIAN_EXISTS EXCEPTION;
+	NOT_VEHICLE_EXISTS EXCEPTION;
+	NOT_VEHICLE_OWNER EXCEPTION;
+BEGIN 
+	SELECT COUNT(*) INTO v_appointment_exists FROM appointments WHERE (i_phone_number = technician_phone_number AND i_vehicle_license_plate = vehicle_license_plate) OR i_timestamp = appointment_timestamp;
+	SELECT COUNT(*) INTO v_technician_exists FROM technicians WHERE i_phone_number = technician_phone_number;
+	SELECT COUNT(*) INTO v_vehicle_exists FROM vehicles WHERE i_vehicle_license_plate = vehicle_license_plate;
+	SELECT COUNT(*) INTO v_vehicle_has_owner FROM customers WHERE i_vehicle_license_plate = vehicle_license_plate;
+	IF v_technician_exists = 0 THEN
+		RAISE NOT_TECHNICIAN_EXISTS;
+	END IF;
+	IF v_vehicle_exists = 0 THEN
+		RAISE NOT_VEHICLE_EXISTS;
+	END IF;
+	IF v_vehicle_has_owner = 0 THEN
+		RAISE NOT_VEHICLE_OWNER;
+	END IF;
+	IF v_appointment_exists > 0 THEN
+		DBMS_OUTPUT.PUT_LINE('This appointment already exists in the database.');
+	ELSE
+		INSERT INTO appointments(technician_phone_number, vehicle_license_plate, appointment_timestamp) VALUES (i_phone_number, i_vehicle_license_plate, i_timestamp);
+		DBMS_OUTPUT.PUT_LINE('Appointment successfully added to the database.');
+	END IF;
+	EXCEPTION
+		WHEN NOT_TECHNICIAN_EXISTS THEN
+			DBMS_OUTPUT.PUT_LINE('Technician with this phone number does not exist in the database.');
+		WHEN NOT_VEHICLE_EXISTS THEN
+			DBMS_OUTPUT.PUT_LINE('Vehicle with this license plate does not exist in the database.');
+		WHEN NOT_VEHICLE_OWNER THEN
+			DBMS_OUTPUT.PUT_LINE('This vehicle does not have an owner assigned to it.');
+END AddNewAppointment;
+
+DECLARE
+	i_phone_number appointments.technician_phone_number%TYPE := '1234567890';
+	i_vehicle_license_plate appointments.vehicle_license_plate%TYPE := 'CA1234CB';
+	i_date appointments.appointment_timestamp%TYPE := TO_TIMESTAMP('29.12.2020 8:30:25', 'DD.MM.YYYY HH24:MI:SS');
+BEGIN
+	AddNewAppointment(i_phone_number, i_vehicle_license_plate, i_date);
+END;

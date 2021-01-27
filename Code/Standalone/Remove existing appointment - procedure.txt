@@ -1,0 +1,27 @@
+CREATE OR REPLACE PROCEDURE RemoveExistingAppointment(i_vehicle_license_plate appointments.vehicle_license_plate%TYPE)
+AS
+	v_appointment_exists NUMBER;
+	v_vehicle_exists NUMBER;
+	NOT_VEHICLE_EXISTS EXCEPTION;
+BEGIN 
+	SELECT COUNT(*) INTO v_appointment_exists FROM appointments WHERE vehicle_license_plate = i_vehicle_license_plate;
+	SELECT COUNT(*) INTO v_vehicle_exists FROM vehicles WHERE i_vehicle_license_plate = vehicle_license_plate;
+	IF v_vehicle_exists = 0 THEN
+		RAISE NOT_VEHICLE_EXISTS;
+	END IF;
+	IF v_appointment_exists > 0 THEN
+		DELETE FROM appointments WHERE vehicle_license_plate = i_vehicle_license_plate;
+		DBMS_OUTPUT.PUT_LINE('Appointment successfully removed from the database.');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('No such appointment exists in the database.');
+	END IF;
+	EXCEPTION
+		WHEN NOT_VEHICLE_EXISTS THEN
+			DBMS_OUTPUT.PUT_LINE('No vehicle with the given license plate exists in the database.');
+END RemoveExistingAppointment;
+
+DECLARE
+	i_vehicle_license_plate appointments.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	RemoveExistingAppointment(i_vehicle_license_plate);
+END;

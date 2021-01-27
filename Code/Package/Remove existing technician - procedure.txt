@@ -1,0 +1,5 @@
+DECLARE
+	i_phone_number technicians.technician_phone_number%TYPE := '1234567890';
+BEGIN
+	vehicle_service.RemoveExistingTechnician(i_phone_number);
+END;

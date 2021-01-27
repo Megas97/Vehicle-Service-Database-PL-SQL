@@ -1,0 +1,5 @@
+DECLARE
+	i_vehicle_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	vehicle_service.RemoveExistingVehicle(i_vehicle_license_plate);
+END;

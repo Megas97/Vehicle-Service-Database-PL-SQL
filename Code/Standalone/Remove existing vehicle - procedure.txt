@@ -1,0 +1,24 @@
+CREATE OR REPLACE PROCEDURE RemoveExistingVehicle(i_vehicle_license_plate IN vehicles.vehicle_license_plate%TYPE)
+AS
+	v_vehicle_exists NUMBER;
+	v_customer_exists NUMBER;
+BEGIN 
+	SELECT COUNT(*) INTO v_vehicle_exists FROM vehicles WHERE vehicle_license_plate = i_vehicle_license_plate;
+	IF v_vehicle_exists > 0 THEN
+		SELECT COUNT(*) INTO v_customer_exists FROM customers WHERE vehicle_license_plate = i_vehicle_license_plate;
+		IF v_customer_exists > 0 THEN
+			DBMS_OUTPUT.PUT_LINE('Cannot remove vehicle as it is linked to an existing customer.');
+		ELSE
+			DELETE FROM vehicles WHERE vehicle_license_plate = i_vehicle_license_plate;
+			DBMS_OUTPUT.PUT_LINE('Vehicle successfully removed from the database.');
+		END IF;
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('No vehicle with the given license plate exists in the database.');
+	END IF;
+END RemoveExistingVehicle;
+
+DECLARE
+	i_vehicle_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	RemoveExistingVehicle(i_vehicle_license_plate);
+END;

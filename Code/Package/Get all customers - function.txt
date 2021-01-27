@@ -1,0 +1,19 @@
+DECLARE
+	cur SYS_REFCURSOR;
+	v_customer_name customers.customer_name%TYPE;
+	v_customer_address customers.customer_address%TYPE;
+	v_customer_phone_number customers.customer_phone_number%TYPE;
+	v_vehicle_license_plate customers.vehicle_license_plate%TYPE;
+BEGIN
+	cur := vehicle_service.getAllCustomers();
+	DBMS_OUTPUT.PUT_LINE('All customers in the service:' || chr(10));
+	LOOP
+		FETCH cur INTO v_customer_name, v_customer_address, v_customer_phone_number, v_vehicle_license_plate;
+		EXIT WHEN cur%NOTFOUND;
+		DBMS_OUTPUT.PUT_LINE('Customer name: ' || v_customer_name);
+		DBMS_OUTPUT.PUT_LINE('Customer address: ' || v_customer_address);
+		DBMS_OUTPUT.PUT_LINE('Customer phone number: ' || v_customer_phone_number);
+		DBMS_OUTPUT.PUT_LINE('Customer vehicle license plate: ' || v_vehicle_license_plate || chr(10));
+	END LOOP;
+	CLOSE cur;
+END;

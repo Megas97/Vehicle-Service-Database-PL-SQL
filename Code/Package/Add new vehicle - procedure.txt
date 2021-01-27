@@ -1,0 +1,7 @@
+DECLARE
+	i_license_plate vehicles.vehicle_license_plate%TYPE := 'CA1234CB';
+	i_make vehicles.vehicle_make%TYPE := 'Honda';
+	i_model vehicles.vehicle_model%TYPE := 'Accord';
+BEGIN
+	vehicle_service.AddNewVehicle(i_license_plate, i_make, i_model);
+END;

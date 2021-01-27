@@ -1,0 +1,40 @@
+CREATE OR REPLACE PROCEDURE RemoveExistingCustomer(i_phone_number IN customers.customer_phone_number%TYPE DEFAULT NULL, i_vehicle_license_plate customers.vehicle_license_plate%TYPE DEFAULT NULL)
+AS
+	v_customer_exists NUMBER;
+	v_vehicle_license_plate customers.vehicle_license_plate%TYPE;
+BEGIN 
+	IF (i_phone_number IS NULL AND i_vehicle_license_plate IS NULL) OR (i_phone_number IS NOT NULL AND i_vehicle_license_plate IS NOT NULL) THEN
+		DBMS_OUTPUT.PUT_LINE('Please input either customer phone number or vehicle license plate.');
+		RETURN;
+	END IF;
+	IF i_phone_number IS NOT NULL THEN
+		SELECT COUNT(*) INTO v_customer_exists FROM customers WHERE customer_phone_number = i_phone_number;
+	ELSIF i_vehicle_license_plate IS NOT NULL THEN
+		SELECT COUNT(*) INTO v_customer_exists FROM customers WHERE vehicle_license_plate = i_vehicle_license_plate;
+	END IF;
+	IF v_customer_exists > 0 THEN
+		IF i_phone_number IS NOT NULL THEN
+			SELECT vehicle_license_plate INTO v_vehicle_license_plate FROM customers WHERE customer_phone_number = i_phone_number;
+		ELSIF i_vehicle_license_plate IS NOT NULL THEN
+			SELECT vehicle_license_plate INTO v_vehicle_license_plate FROM customers WHERE vehicle_license_plate = i_vehicle_license_plate;
+		END IF;
+		DELETE FROM customers WHERE vehicle_license_plate = v_vehicle_license_plate;
+		DELETE FROM appointments WHERE vehicle_license_plate = v_vehicle_license_plate;
+		DELETE FROM vehicles WHERE vehicle_license_plate = v_vehicle_license_plate;
+		DBMS_OUTPUT.PUT_LINE('Customer successfully removed from the database.');
+	ELSE
+		IF i_phone_number IS NOT NULL THEN
+			DBMS_OUTPUT.PUT_LINE('Customer with this phone number does not exist in the database.');
+		ELSIF i_vehicle_license_plate IS NOT NULL THEN
+			DBMS_OUTPUT.PUT_LINE('Customer with this license plate does not exist in the database.');
+		END IF;
+	END IF;
+END RemoveExistingCustomer;
+
+DECLARE
+	i_phone_number customers.customer_phone_number%TYPE := '0987654321';
+	i_vehicle_license_plate customers.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	RemoveExistingCustomer(i_phone_number => i_phone_number);
+	--RemoveExistingCustomer(i_vehicle_license_plate => i_vehicle_license_plate);
+END;

@@ -1,0 +1,36 @@
+CREATE OR REPLACE PROCEDURE AddNewCustomer(i_name IN customers.customer_name%TYPE, i_address IN customers.customer_address%TYPE, i_phone_number IN customers.customer_phone_number%TYPE, i_vehicle_license_plate IN customers.vehicle_license_plate%TYPE)
+AS
+	v_customer_exists NUMBER;
+	v_phone_number_taken_by_technician NUMBER;
+	v_license_plate_exists NUMBER;
+	CHECK_CONSTRAINT_VIOLATED EXCEPTION;
+	PRAGMA EXCEPTION_INIT(CHECK_CONSTRAINT_VIOLATED, -2291);
+BEGIN 
+	SELECT COUNT(*) INTO v_customer_exists FROM customers WHERE i_phone_number = customer_phone_number;
+	SELECT COUNT(*) INTO v_phone_number_taken_by_technician FROM technicians WHERE i_phone_number = technician_phone_number;
+	IF v_customer_exists > 0 THEN
+		DBMS_OUTPUT.PUT_LINE('This phone number is already used by an existing customer.');
+	ELSIF v_phone_number_taken_by_technician > 0 THEN
+		DBMS_OUTPUT.PUT_LINE('This phone number is already used by an existing technician.');
+	ELSE
+		SELECT COUNT(*) INTO v_license_plate_exists FROM customers WHERE vehicle_license_plate = i_vehicle_license_plate;
+		IF v_license_plate_exists > 0 THEN
+			DBMS_OUTPUT.PUT_LINE('This license plate is already used by another customer''s vehicle.');
+		ELSE
+			INSERT INTO customers(customer_name, customer_address, customer_phone_number, vehicle_license_plate) VALUES (i_name, i_address, i_phone_number, i_vehicle_license_plate);
+			DBMS_OUTPUT.PUT_LINE('Customer successfully added to the database.');
+		END IF;
+	END IF;
+	EXCEPTION
+		WHEN CHECK_CONSTRAINT_VIOLATED THEN
+			DBMS_OUTPUT.PUT_LINE('No vehicle with the given license plate exists in the database.');
+END AddNewCustomer;
+
+DECLARE
+	i_name customers.customer_name%TYPE := 'Tony Stark';
+	i_address customers.customer_address%TYPE := 'Sofia, Mladost 3, bl. 345, entr. 4, fl. 3, ap. 300';
+	i_phone_number customers.customer_phone_number%TYPE := '0987654321';
+	i_vehicle_license_plate customers.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	AddNewCustomer(i_name, i_address, i_phone_number, i_vehicle_license_plate);
+END;

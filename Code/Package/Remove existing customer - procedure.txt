@@ -1,0 +1,7 @@
+DECLARE
+	i_phone_number customers.customer_phone_number%TYPE := '0987654321';
+	i_vehicle_license_plate customers.vehicle_license_plate%TYPE := 'CA1234CB';
+BEGIN
+	vehicle_service.RemoveExistingCustomer(i_phone_number => i_phone_number);
+	--vehicle_service.RemoveExistingCustomer(i_vehicle_license_plate => i_vehicle_license_plate);
+END;
